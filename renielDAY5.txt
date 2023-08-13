@@ -1,0 +1,203 @@
+config t
+   hostname COREtaas31
+   enable secret pass
+   service password-encryption
+   no logging console
+   no ip domain-lookup
+   line console 0
+     password pass
+     login
+     exec-timeout 0 0
+    line vty 0 14
+      password pass
+      login
+      exec-timeout 0 0
+end
+
+!!!!!!!!!!!!!!!!!!
+
+802.1Q DTP - Dynamic Trunking Protocol
+
+conf t
+ int range fa0/10 - 12
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+
+end
+
+!! TRUNK ALLOW VLAN INTO SINGLE PORT !!
+
+
+
+!!!!!!!!!!!!!!!!!!!
+802.1D - Spanning Tree Protocol
+
+
+conf t
+no spanning-tree vlan 1
+no spanning-tree vlan 100
+
+end
+
+conf t
+spanning-tree vlan 1
+spanning-tree vlan 100
+
+end
+
+SW TAAS
+F025.726E.1800
+
+SW BABA
+0817.3510.B300
+
+conf t
+
+spanning-tree vlan 1 priority 8192
+end
+
+conf t
+
+spanning-tree v lan 1 priority root primary
+
+ELECTION OF ROOT PORT ( THE LOWEST WIN)
+1 PORT PRIORITY
+2 COST
+3 PORT NUMBER
+
+
+!!!!!!!!!!!!!!
+!ROOT BRIDGE
+
+conf t
+spanning-tree mode rapid-pvst
+spanning-tree backbonefast
+int range fa 0/1 - 8
+ switchport mode access
+ spanning-tree portfast
+end
+
+!NON-ROOT
+conf t
+spanning-tree mode rapid-pvst
+spanning-tree uplinkfast
+int range fa 0/1 - 8
+ switchport mode access
+ spanning-tree portfast
+end
+
+
+!!!!!!!
+
+PORT Security
+
+conf t
+int fa0/1
+switchport port-security 
+switchport port-security mac-address sticky
+switchport port-security maximum 1
+switchport port-security violation shutdown
+end
+
+show port-security address
+
+sh port 
+
+!!!!!!!!!!!
+
+conf t
+
+int fa0/4
+switchport mode access
+switchport access vlan 100
+
+
+!!!!!!!!!!!!
+
+!ETHERCHANNEL
+
+conf t
+ int range fa0/10 - 12
+ shut
+ channel-group 1 mode active
+ channel-protocol lacp
+ no shut
+
+int port-channel 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+end
+
+
+!!!!!!!!!!!!!!
+
+EXERCISE
+
+
+conf t
+int range fa0/7 - 10
+no shut
+switchport trunk encapsulation dot1q
+switchport mode trunk
+
+conf t
+int vlan 1
+ no shut
+ ip add 10.0.0.1 255.0.0.0
+end
+
+conf t
+int f0/12
+ no switchport
+ ip add 100.0.0.1 255.255.255.0
+end
+
+conf t
+ip routing
+router eigrp 100
+ no auto-summary
+ network 10.0.0.0
+ network 100.0.0.0
+end
+
+!!!!!!!!!!!!!!
+
+conf t
+hostname ISPRouter
+
+int giga0/0/0
+no shut
+ip add 100.0.0.2 255.255.255.0
+
+int giga0/0/1
+no shut
+ip add 200.0.0.2 255.255.255.0
+
+int lo 0
+ip add 8.8.8.8 255.255.255.255
+
+router eigrp 100
+no auto-summary
+network 100.0.0.0
+network 200.0.0.0
+network 8.8.8.8
+end
+
+!!!
+CORE1
+conf t
+ int vlan 1
+ shut
+
+---------------------
+
+HSRP ( HOT STANDBY ROUTING PROTOCOL )
+
+conf t
+ int vlan 1
+ ip add 10.0.0.3 255.0.0.0
+ standby 1 ip 10.0.0.1
+ standby 1 preempt
+ standby 1 priority 150
+
+

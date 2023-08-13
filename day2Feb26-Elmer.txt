@@ -1,0 +1,343 @@
+DAY2
+
+netstat -s -p tcp
+3 types of ping
+ping www.nba.com
+ping 1.1.1.1
+ping 100111001
+
+DAY2: HOW TO BE A NETWORK/SYSTEMS/CLOUD ENGINEER
+Task 1: Change your eyes/view of the world
+
+Normal na tao: Decimal only
+
+Network Engr
+Decimal                Binary                 Hex
+0 - 255              0 or 1                 0-9, A-F
+
+Maynilad              IPV4                  IPV6
+0000000             0.0.0.0                  :0000:
+0000001             0.0.0.0                  :0001:
+0000009             0.0.0.255                :000F:
+0000010             0.0.1.0                  :0010:
+007999              7.255.255.255            :7FFF:
+008000              8.0.0.0                  :8000:
+008001              8.0.0.1                  :8001:
+008999            8.255.255.255               8fff
+009000                  9.0.0.0               9000
+.....
+0010099              10.254.255.255          abce 
+0010100              10.255.0.0              abcf
+
+task2
+
+TASK3 subnetting
+WORLD METHOD vs RIVAN METHOD
+How to subnet rivan method: " C S i"
+Convert IT, Subtract IT, Ipasoksahiwababay!"
+
+ex1 design a call center for accenture
+using 10.0.0.0/8 (16million) with 1600 agents, TLs,QAs
+ConvertIT: 1600 is 11 bits
+Subtract32: /32 - /11 = /21 -> 3rd, 8i
+"Ipasok 8i sa 3rd:"
+Accenture.com 10.0.8.0/21 +1
+1stvalid: 10.0.8.1 -> 10.0.15.254
+lastIP: 10.0.15.255 (broadcast)
+Notaccenture.com: 10.0.16.0/21 - 1
+
+ex2: design and implement sykesasia.com
+using 10.0.0.0/8(16m) with only 2788 agents, TLs, QAs,PM
+C: 2788 is 12bits
+S: /32 - /12 = /20 -> 3rd, 16i
+ipasok 16i sa 3rd
+sykesasia.com 10.0.16.0/20 +1
+1stvalid: 10.0.16.1 -> 10.0.31.254
+last ip (broadcast): 10.0.31.255
+Notsykesasia.com: 10.0.32.0/20
+
+for sykesasia.com
+config t
+vlan 25
+name sykesasia.com
+int vlan 25
+no shutdown
+ip add 10.0.16.1 255.255.240.0
+ip dhcp Excluded-Add 10.0.16.1 10.0.16.100
+ip dhcp pool sykesasia.com
+network 10.0.16.0 255.255.240.0
+default-router 10.0.16.1
+domain-name sykesasia.com
+dns-server 10.31.1.10
+option 150 ip 10.31.100.8
+int fa 0/5
+switchport access vlan 25
+do sh ip int br
+
+ex3: Design a network for Concentrix.com
+using 10.0.0.0/8 (16m) with 8500 agents and TLs
+C 8500 is 14bits
+S /32 - /14 = /18 -> 3rd, 64i
+ipasok 64i sa 3rd 
+10.0.64.0
+concentrix.com 10.0.64.0/18
+1stvalid: 10.0.64.1/18 -> 10.0.64.254/18
+Broadcast: 10.0.127.255/18
+Notconcentrix.com: 10.0.128.0/18
+
+for concentrix switch
+config t
+vlan 25
+name concentrix.com
+int vlan 25
+no shutdown
+ip add 10.0.64.1 255.255.192.0
+ip dhcp Excluded-Add 10.0.64.1 10.0.64.100
+ip dhcp pool concentrix.com
+network 10.0.64.0 255.255.192.0
+default-router 10.0.64.1
+domain-name concentrix.com
+dns-server 10.31.1.10
+option 150 ip 10.31.100.8
+int fa 0/5
+switchport access vlan 25
+do sh ip int br
+
+
+ex. 4 Design a call center for ALORICA.COM
+using 10.0.0.0/8 with 350 agents, hosts, PCs.
+C 350 is 9bits
+S /32 - /9 = /23 -> 3rd, 2i
+Ipasok si 2i sa 3rd
+ 10.0.2.0 +1
+1st valid: 10.0.2.1/23 -> 10.0.3.254/23
+Broadcast 10.0.3.255/23
+notALORICA.com 10.0.4.0/23
+
+
+for aloricaswitch
+config t
+vlan 25
+name ALORICA.com
+int vlan 25
+no shutdown
+ip add 10.0.2.1 255.255.254.0
+ip dhcp Excluded-Add 10.0.2.1 10.0.2.100
+ip dhcp pool ALORICA.com
+network 10.0.2.0 255.255.254.0
+default-router 10.0.2.1
+domain-name ALORICA.com
+dns-server 10.31.1.10
+option 150 ip 10.31.100.8
+int fa 0/5
+switchport access vlan 25
+do sh ip int br
+
+
+ex. 5 Design a call center response for pnp.gov.ph using 10.0.0.0/ with only 50 agents
+C 50 agents is 6bits
+S /32 - /6 = /26 -> 4th, 64i
+ipasok si 64i sa 4th
+10.0.0.64/26
+1st valid 10.0.0.65/26 - 10.0.0.126/26
+Broadcast 10.0.0.127
+notpnp.gov.ph 10.0.0.128/26
+
+
+for pnp.gov.ph
+config t
+vlan 25
+name pnp.gov.ph
+int vlan 25
+no shutdown
+ip add 10.0.0.65 255.255.255.192
+ip dhcp Excluded-Add 10.0.0.65 10.0.0.69
+ip dhcp pool pnp.gov.ph
+network 10.0.0.64 255.255.255.192
+default-router 10.0.0.65
+domain-name pnp.gov.ph
+dns-server 10.31.1.10
+option 150 ip 10.31.100.8
+int fa 0/5
+switchport access vlan 25
+do sh ip int br
+--------------------------------
+securecrt
+telnet
+10.31.1.4
+User Access Verification
+
+Password: 
+CUCM-31>
+CUCM-31>
+CUCM-31>
+CUCM-31>ena
+Password: 
+CUCM-31#
+CUCM-31#
+CUCM-31#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+CUCM-31(config)#
+CUCM-31(config)#ip routing
+CUCM-31(config)#ip route 0.0.0.0 0.0.0.0 10.31.100.4
+                                ^
+% Invalid input detected at '^' marker.
+
+CUCM-31(config)#ip route 0.0.0.0 0.0.0.0 10.31.100.4
+
+Design Template:
+config t
+vlan 25
+name _____.com
+int vlan 25
+no shutdown
+ip add 10.0._._ 255.255._._
+ip dhcp Excluded-Add 10.0._._ 10.0._._
+ip dhcp pool ____.com
+network 10.0._._ _._._
+default-router 10.0._._
+domain-name _____.com
+dns-server 10.31.1.10
+option 150 ip 10.31.100.8
+int fa 0/5
+switchport access vlan 25
+do sh ip int br
+
+TASK4: 100% job interview:IPv4 address mastery
+Q1: What are the 6 classes of IPv4
+Special Class: DEFAULT ROUTE/tAGABIGAyNET
+0.0.0.0/0 or 0.0.0.0 0.0.0.0
+cmd
+route print
+ping google.com
+route delete 0.0.0.0
+ping google.com
+ibalik
+route add 0.0.0.0 mask 0.0.0.0 10.3.3.1 -p
+ping google.com
+
+127.0.0.1 - 127.255.255.255 = loopback/Baliksayo
+ping 127.1.2.3
+
+169.254.0.1 - 169.254.255.255 = APIPA, nasira ang dhcp
+AutomaticPrivateIPAddressAllocation = Bobo si network engr
+
+Q2: What are the PrivateIPaddress vs PublicIPaddress
+                  pldthomefiber         pldt enterprise  
+Public IP address are internet routable IP address. Used in VPN, webhosting,DNS,etc
+
+Private IP address are for poor people with no business skills: Non-routable IP
+192.168.0.0
+172.16.0.0
+10.0.0.0/8 connection to the internet
+
+Q3: How do you check if you have Private/Public
+PrivateIP: route print / ipconfig
+
+publicIP: www.ipchicken.com
+          whatismyip.com
+
+Q4: what are the 5 classes of IP address?
+"Sir with all due respect, nobody gives a fuck!"
+The whole world is using CIDR: classLessInterdomainRouting since 1993
+
+
+
+
+
+-------------------------------------------------
+
+Homework: Subnetting and DHCP
+Design and Configure DHCP for sykes.com on D1 using
+172.16.0.0/16 with 1500 hosts
+C 1500 is 11bits
+S /32 - /11 = /21 -> 3rd, 8i
+i ipasok 8i sa 3rd
+172.16.8.0
+sykes.com: 172.16.8.1
+1stvalid: 172.16.8.1 - 172.16.31.254
+broadcast 172.16.31.255
+notsykes 172.16.32.0/21
+
+for sykes
+@D1 mamigay ng IP
+config t
+vlan 25
+name sykes.com
+int vlan 25
+no shutdown
+ip add 172.16.8.1 255.255.248.0
+ip dhcp Excluded-Add 172.16.8.1 172.16.8.100
+ip dhcp pool sykes.com
+network 172.16.8.0 255.255.248.0
+default-router 172.16.8.1
+domain-name sykes.com
+dns-server 10.31.1.10
+option 150 ip 10.31.100.8
+end
+@A1 ikabit ang pc
+conf t
+int e0/0
+switchport access vlan 25
+do sh ip int br
+
+@P1
+conf t
+int e0/0
+ip add dhcp
+no shut
+do bp
+
+
+HOMELAB: Design a DHCP on D1 for poorako.com using 192.168.80.0/24 with 25 hosts. Note exlcude only 3 ip add
+C 25 hosts is 5bits
+S /32 - /25 = /7
+i
+
+PC1 must be 192.168.80.36 or 37
+
+
+
+
+--------------------------------------------------------
+
+DAY3: IP routing (para matawag na Network Engr)
+Static routing = minwage
+EIGRP = 18k to 25k
+OSPF = 25k to 39k
+BGP = 40k to 80k
+VPNsite2site = 50k up to 120k+
+
+CCNA: static and OSPF
+CCNP: All of above
+
+
+COREbaba31(config)#router eigrp 100
+COREbaba31(config-router)#network 10.0.0.0
+
+COREbaba31(config)#router ospf 1
+COREbaba31(config-router)#network 0.0.0.0 255.255.255.255 area 0
+
+Hello: OSPF and EIGRP
+
+TASK6: EXAM QUESTION ON IPV4 THAT WILL DESTROY YOUR BRAIN
+Q1: You find a laptop with ip address 192.168.100.201/28 to which company it belongs
+a. sykes: 192.168.100.16/28 
+b. accenture: 192.168.100.80/28
+c. etelecare: 192.168.100.128/28
+d. telus: 192.168.100.64/28
+e. notknown - ans
+
+Q2: You find a laptop with ip address 192.168.100.90/28 to which company it belongs
+a. sykes: 192.168.100.16/28 
+b. accenture: 192.168.100.80/28 ans
+c. etelecare: 192.168.100.128/28
+d. telus: 192.168.100.64/28
+e. notknown
+
+Q3: You find a laptop with ip address 192.168.100.70/28 to which company it belongs
+a. sykes: 192.168.100.16/28 
+b. accenture: 192.168.100.80/28
+c. etelecare: 192.168.100.128/28
+d. telus: 192.168.100.64/28 ans
+e. notknown

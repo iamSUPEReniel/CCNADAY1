@@ -1,0 +1,387 @@
+210.5.104.27
+
+110.34.166.139
+NMAP 
+
+-----------------
+
+conf t
+no access-list 1
+access-list 1 deny 10.12.0.0 0.0.255.255
+access-list 1 deny 10.22.0.0 0.0.255.255
+access-list 1 deny 10.32.0.0 0.0.255.255
+access-list 1 deny 10.42.0.0 0.0.255.255
+access-list 1 deny 10.52.0.0 0.0.255.255
+access-list 1 deny 10.62.0.0 0.0.255.255
+access-list 1 permit any
+int gi 0/0/1
+ip access-group 1 in
+do sh ip access-list 1
+
+
+------
+conf t
+
+int gi 0/0/1
+no ip access-group 5 in
+do sh ip access-list 5
+end
+--------------
+
+conf t
+no access-list 2
+access-list 2 permit 10.11.0.0 0.0.255.255
+access-list 2 permit 10.12.0.0 0.0.255.255
+access-list 2 permit 10.31.0.0 0.0.255.255
+access-list 2 permit 10.32.0.0 0.0.255.255
+access-list 2 permit 10.41.0.0 0.0.255.255
+access-list 2 permit 10.42.0.0 0.0.255.255
+access-list 2 deny any
+
+int gi 0/0/1
+ip access-group 2 in
+do sh ip access-list 2
+
+end
+
+------------------------
+
+
+conf t
+no access-list 3
+access-list 3 permit 10.31.0.0 0.0.255.255
+access-list 3 permit 10.32.0.0 0.0.255.255
+access-list 3 permit 10.41.0.0 0.0.255.255
+access-list 3 permit 10.42.0.0 0.0.255.255
+access-list 3 deny any
+int gi 0/0/1
+ip access-group 3 in
+do sh ip access-list 3
+
+end
+
+----------------------------------
+conf t
+access-list 4 permit 10.32.0.0 0.0.255.255
+access-list 4 deny any
+int gi 0/0/1
+ip access-group 4 in
+do sh ip access-list 4
+
+end
+
+--------
+
+conf t
+access-list 5 permit 10.11.0.0 0.0.255.255
+access-list 5 permit 10.21.0.0 0.0.255.255
+access-list 5 deny any
+int gi 0/0/1
+ip access-group 5 in
+do sh ip access-list 5
+
+end
+
+----------------------------------------
+
+TASK5: HOW TO START A CAREER IN NETWORK CYBERSECURITY FOR FREE!!
+intentionally hackable websites
+1. Hack The Box
+2. CTFlearn
+3. bWAPP
+4. HackThisSite
+5. Google Gruyere
+6. Damn Vulnerable iOS App - DVIA
+7. Hellbound Hackers
+8. OWASP Mutillidae II
+9. HackThis!!
+
+task6: How to Make CUCM intentionally hackable to Learn
+the Basics for Firewalls.
+before: nmap -v 10.m.100.8
+@Cucm:
+config t
+int fa 0/0
+ ip add 10.31.100.9 255.255.255.0 Secondary
+service finger
+service tcp-small-servers
+service udp-small-servers
+ip dns server
+ip http server
+ip http secure-server
+!Make Ping EASY
+ip host pc 10.31.1.10
+ip host cm 10.31.100.8
+ip host cm2 10.31.100.9
+ip host p1 10.31.100.101
+ip host p2 10.31.100.102
+ip host sw 10.31.1.4
+ip host ed 10.31.31.1
+
+
+==================
+
+conf t
+no access-list 100
+access-list 100 permit tcp any host cm eq 80
+access-list 100 permit tcp any host cm eq 23
+access-list 100 permit tcp any host cm eq 2000
+access-list 100 permit tcp any host cm2 eq 22
+access-list 100 permit tcp any host cm2 eq 53
+access-list 100 permit udp any host cm2 eq 53
+access-list 100 permit icmp any host cm2
+int fa0/0
+no ip access-group 100 in
+end
+
+
+----------------------------------------------------
+
+conf t
+no access-list 101
+access-list 101 permit tcp any host cm eq 53
+access-list 101 permit udp any host cm eq 53
+access-list 101 permit tcp any host cm eq 22
+access-list 101 permit tcp any host cm eq 2000
+access-list 101 permit tcp any host cm2 eq 80
+access-list 101 permit tcp any host cm2 eq 443
+access-list 101 permit tcp any host cm2 eq 79
+
+int fa0/0
+ ip access-group 101 in
+end
+
+----------------------------------------------
+
+conf t
+no access-list 102
+access-list 100 permit tcp any host cm eq 23
+access-list 100 permit tcp any host cm eq 22
+access-list 100 permit tcp any host cm2 eq 23
+access-list 100 permit tcp any host cm2 eq 443
+access-list 100 permit tcp any host cm2 eq 79
+access-list 100 permit tcp any host cm2 eq 2000
+
+int fa0/0
+ ip access-group 102 in
+end
+
+====================================================
+
+conf t
+no access-list 104
+access-list 104 permit icmp any host cm
+access-list 104 permit tcp any host cm eq 80
+access-list 104 permit tcp any host cm eq 443
+access-list 104 permit tcp any host cm eq 2000
+access-list 104 permit tcp any host cm eq 53
+access-list 104 permit udp any host cm eq 53
+
+access-list 104 permit tcp any host cm2 eq 23
+access-list 104 permit tcp any host cm2 eq 22
+access-list 104 permit tcp any host cm2 eq 79
+access-list 104 permit tcp any host cm2 eq 19
+
+int fa0/0
+ ip access-group 104 in
+end
+
+======================================
+
+conf t
+no access-list 105
+access-list 105 permit tcp host p1 host cm eq 2000
+access-list 105 permit icmp host p2 host cm
+access-list 105 permit tcp host pc host cm eq 23
+access-list 105 permit tcp host pc host cm eq 22
+access-list 105 permit tcp host pc host cm eq 80
+access-list 105 permit icmp host sw host cm
+access-list 105 permit tcp host sw host cm eq 80
+
+int fa0/0
+ ip access-group 105 in
+end
+
+
+----------------------------------------
+
+
+conf t
+no access-list 106
+access-list 106 permit tcp host p2 host cm eq 2000
+access-list 106 permit icmp host p1 host cm
+
+access-list 106 permit tcp host pc host cm eq 53
+access-list 106 permit tcp host pc host cm eq 79
+access-list 106 permit tcp host pc host cm eq 5060
+
+access-list 106 permit icmp host 10.31.100.4 host cm
+access-list 106 permit tcp host 10.31.100.4 host cm2 eq 80
+
+int fa0/0
+ ip access-group 106 in
+end
+
+--------------------------
+
+
+--------------------------------------------
+
+conf t
+no access-list 8
+
+access-list 8 permit 10.11.0.0 0.0.255.255
+access-list 8 permit 10.21.0.0 0.0.255.255
+access-list 8 permit 10.31.0.0 0.0.255.255
+
+access-list 8 permit any
+int gi 0/0/1
+ip access-group 8 in
+do sh ip access-list 8
+
+-----------------------
+
+
+conf t
+no access-list 9
+
+access-list 9 permit 10.11.0.0 0.0.255.255
+access-list 9 permit 10.21.0.0 0.0.255.255
+access-list 9 permit 10.31.0.0 0.0.255.255
+access-list 9 permit 10.12.0.0 0.0.255.255
+access-list 9 permit 10.22.0.0 0.0.255.255
+access-list 9 permit 10.32.0.0 0.0.255.255
+
+access-list 9 deny any
+int gi 0/0/1
+no ip access-group 9 in
+do sh ip access-list 9
+
+end
+
+-------------------------------
+
+
+conf t
+line vty 0 14
+exec-timeout 0 0
+ip dhcp excluded-add 192.168.102.1 192.168.102.150
+ip dhcp pool pool2
+ network 192.168.102.0 255.255.255.0
+ default-router 192.168.102.8
+ domain-name rivanit.com
+ dns-server 8.8.8.8
+exit
+
+int gi 2
+no shut
+ip add 192.168.102.8 255.255.255.0
+end
+
+int gi 3
+no shut
+ip add 192.168.103.8 255.255.255.0
+end
+
+
+!Linux3
+
+sudo su
+sudo ifconfig eth0 192.168.103.88 netmask 255.255.255.0 up
+sudo route add default gw 192.168.103.8
+---------------------------------------
+
+192.168.102.151 can ping, ssh, 192.168.103.8
+192.168.102.152 can web, https 192.168.103.8
+
+
+conf t
+no access-list 100
+access-list 100 perm icmp ho 192.168.102.151 ho 192.168.103.8
+access-list 100 perm tcp ho 192.168.102.151 ho 192.168.103.8 eq 22
+access-list 100 perm tcp ho 192.168.102.152 ho 192.168.103.8 eq 80
+access-list 100 perm tcp ho 192.168.102.152 ho 192.168.103.8 eq 443
+
+int gi 3
+ip access-group 100 OUT
+
+end
+
+
+--------------------------------
+
+!NAT
+Give internet to 5n1
+
+conf t
+ip route 0.0.0.0 0.0.0.0 192.168.108.2
+ip domain-lookup
+ip name-server 8.8.8.8 1.1.1.1
+do ping www.nba.com
+
+
+!Create ACL to allow all linux
+
+conf t
+access-list 5 permit 192.168.102.0 0.0.0.255
+access-list 5 permit 192.168.103.0 0.0.0.255
+end
+
+!Create Static NAT pool and Ovearload
+
+
+conf t
+ip nat inside source static 192.168.102.151 192.168.102.69
+ip nat inside source static 192.168.102.152 192.168.102.88
+ip nat inside source list 5 int gi 1 overload
+
+end
+
+!Define NAT inside/ NAT outside
+
+conf t
+int gi 1
+IP NAT outside
+int gi 2
+IP NAT inside
+int gi 3
+IP NAT inside
+
+end
+
+
+!I
+conf t
+ntp server time.google.com
+end
+
+sh ntp association
+sh clock
+
+--------------------------
+
+
+FD E8 F7 A9 B8 6C 3B FF 07 C0 D3 9D 04 60 5E D5
+
+B6 14 88 9E 42 6B A0 C9 74 AC 31 47 03 13 E8 C6 D6 71 A1 76 C5 F8 A8 7A 3F 83 02 23 30 B7 9C 6F
+
+
+---------------------
+
+
+!HOW TO CONFIGURE SSH
+
+conf t
+ip domain-name secure.com
+crypto key generate rsa
+   ???512 xxx, 1024
+
+ip ssh version 2
+username ssh privilege 15 secret pass
+line vty 0 14
+login local
+
+------------------------------------
+
+
+

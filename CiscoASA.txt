@@ -1,0 +1,163 @@
+SAKSAK ASA 
+
+STEPS: 
+
+Blue cable - kabit sa gigabit 1/1 ng ASA 
+
+White cable - kabit sa GE MGMT (management) 
+
+Console - saksak sa kabilang dulo label (CONSOLE) 
+
+Open SEcure CRT  
+
+Serial 
+9600 
+Connect (COM4) 
+
+Should appear "ciscoasa>"
+
+if did not appear: ctrl + z 
+
+COMMAND:
+
+write erase
+reload 
+
+wait for rebooting 
+
+COMMAND TO PASTE: 
+
+conf t 
+interface management 1/1
+nameif MGMT
+security-level 99
+ip add 192.168.100.1 255.255.255.0 
+no shut
+username admin password pass privilege 15
+aaa authentication http console LOCAL
+http server enable 
+http 192.168.100.10 255.255.255.255 MGMT 
+ 
+------------------------------------------------------------
+
+Steps : 
+
+ncp.cpl 
+tunay - properties - ipv4 
+
+ip add: 192.168.100.10
+        255.255.255.0 
+
+Secure CRT: paste command 
+
+conf t 
+interface management 1/1
+nameif MGMT
+security-level 99
+ip add 192.168.100.1 255.255.255.0 
+no shut
+username admin password pass privilege 15
+aaa authentication http console LOCAL
+http server enable 
+http 192.168.100.10 255.255.255.255 MGMT 
+
+windows key 
+type ASDM 
+
+IP ADD: 192.168.100.1
+user: admin
+pass: pass 
+enter 
+
+prompt: click cancel
+prompt: ok 
+--------------------------------------------------
+
+GRAPHIC USER INTERFACE (GUI) 
+
+COnfiguration - Device set up - interfaces settings 
+interfaces 
+
+Gigabit 1/1 - Edit 
+
+Interface name: WAN 
+
+security level - 0 
+
+check: enable interface 
+
+Use static - 200.0.0.31 - OK 
+
+------------------------------------------------
+
+Gigabit 1/2 - Edit 
+
+Interface name: LAN 
+
+check: enable interface 
+
+security level - 99
+
+Use static - 10.31.100.1 - OK 
+
+------------------------------------------------
+
+Open Kali Laptop 
+
+Saksak Kali sa Gigabit 1/2 
+
+user: kali 
+pass: c1sc0123
+
+------------------------------------------------
+
+COMMAND: 
+
+conf t
+http 10.31.100.0 255.255.255.0 LAN
+http 10.31.100.100 255.255.255.255 LAN 
+http 10.31.100.101 255.255.255.255 LAN  
+dhcpd address 10.31.100.100-10.31.100.200 LAN 
+dhcpd enable LAN 
+
+-------------------------------------------------
+
+Open kali linux laptop 
+
+set up network 
+IPV4 - DHCP - ADD 
+
+Balik ASDM 
+
+---------------------------------------------------
+GUI 
+
+STATIC ROUTE 
+Congiuration - Routing - Static Route - Add 
+
+IPV4 
+
+Interface : WAN - any4 - 200.0.0.1 - OK - Apply 
+
+---------------------------------------------------
+NAT 
+
+Configuration - Firewall - NAT Rules - ADD NAT RULE AFTER
+
+Source Interface - LAN \
+Destinstion: WAN 
+
+Default: ANY 
+
+Dynamic PAT (HIDE) 
+
+-------------------------------------------------------
+
+Cisco ASA 
+
+COMMAND: 
+
+conf t
+policy-map global-policy
+class inspection_default
+inspect icmp

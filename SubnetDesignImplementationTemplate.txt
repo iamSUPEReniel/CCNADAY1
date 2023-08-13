@@ -1,0 +1,224 @@
+Subnet Design Implementation Template:
+
+config t
+vlan 25
+name TELUS.com
+exit
+
+int vlan 25
+no shut
+ip add 10.0.2.1 255.255.254.0
+
+ip dhcp excluded-add 10.0.2.1 10.0.2.100
+ip dhcp pool TELUS.com
+	network 10.0.2.0 255.255.254.0
+	default-router 10.0.2.1
+	domain-name TELUS.com
+	dns-server 10.31.1.10
+	option 150 ip 10.31.100.8
+
+int fa0/5
+	swi acc vlan 25
+	do sh ip dhcp binding
+
+--------------------------------------------
+
+
+config t
+vlan 25
+name PNP.com
+exit
+
+int vlan 25
+no shut
+ip add 10.0.1.1 255.255.255.0
+
+ip dhcp excluded-add 10.0.1.1 10.0.1.50
+ip dhcp pool PNP.com
+	network 10.0.1.0 255.255.255.0
+	default-router 10.0.1.1 
+	domain-name PNP.com
+	dns-server 10.31.1.10
+	option 150 ip 10.31.100.8
+
+int fa0/5
+	swi acc vlan 25
+ 	do sh ip dhcp bindin
+
+
+________________________________________
+
+
+config t
+vlan 25
+name ALORICA.com
+exit
+
+int vlan 25
+no shut
+ip add 10.0.32.1 255.255.224.0
+
+ip dhcp excluded-add 10.0.32.1 10.0.32.100
+ip dhcp pool ALORICA.com
+	network 10.0.32.0 255.255.224.0
+	default-router 10.0.32.1
+	domain-name ALORICA.com
+	dns-server 10.31.1.10
+	option 150 ip 10.31.100.8
+
+int fa0/5
+	swi acc vlan 25
+ 	do sh ip dhcp binding
+
+
+
+
+config t
+vlan 25
+name NBI.GOV.com
+exit
+
+int vlan 25
+no shut
+ip add 10.0.0.65 255.255.255.192
+
+ip dhcp excluded-add 10.0.0.65 10.0.0.70
+ip dhcp pool NBI.GOV.com
+	network 10.0.0.64 255.255.255.192
+	default-router 10.0.0.65
+	domain-name NBI.GOV.com
+	dns-server 10.31.1.10
+	option 150 ip 10.31.100.8
+
+int fa0/5
+	swi acc vlan 25
+
+-----------------------------------------------
+!D1
+config t
+vlan 25
+name DNS.com
+exit
+
+int vlan 25
+no shut
+ip add 10.0.0.9 255.255.255.248
+
+ip dhcp excluded-add 10.0.0.9 10.0.0.9
+ip dhcp pool DNS.com
+	network 10.0.0.8 255.255.255.248
+	default-router 10.0.0.9
+	domain-name DNS.com
+	dns-server 10.31.1.10
+
+end
+
+int e1/0
+	swi mode acc
+	swi acc vlan 25
+ 	do sh ip dhcp binding
+
+!S1
+conf t
+int e1/0
+ip add dhcp
+
+
+
+--------------------------
+!D2
+config t
+vlan 26
+name WEB.com
+exit
+
+int vlan 26
+no shut
+ip add 10.0.0.33 255.255.255.224
+
+ip dhcp excluded-add 10.0.0.33 10.0.0.34
+ip dhcp pool WEB.com
+	network 10.0.0.32 255.255.255.224
+	default-router 10.0.0.32
+	domain-name WEB.com
+	dns-server 10.31.1.10
+end
+
+conf t
+int e1/0
+	swi mode acc
+	swi acc vlan 26
+ 	do sh ip dhcp binding
+
+
+-------------------
+config t
+vlan _
+name _.com
+exit
+
+int vlan _
+no shut
+ip add 10.0._._ 255.255._._
+
+ip dhcp excluded-add 10.0._._ 10.0._._
+ip dhcp pool _.com
+	network 10.0._._ 255.255._._
+	default-router 10.0._._
+	domain-name _.com
+	dns-server 10.31.1.10
+	option 150 ip 10.31.100.8
+
+int fa0/5
+	swi acc vlan 25
+ 	do sh ip dhcp binding
+
+-------------------------------------------
+
+------------------------------------
+METHOD 1
+
+Ipv6 
+Static
+
+!D1
+
+conf t
+ipv6 unicast-routing
+int vlan 25
+ ipv6 address face:cafe:fafa:caca::a/64
+end
+
+
+!S1
+conf t
+ipv6 unicast-routing
+int e1/0
+ ipv6 address face:cafe:fafa:caca::f/64
+end
+
+-------------------------------------------
+METHOD 2
+EUi64
+
+IPV6 Config
+
+D1
+
+conf t
+ipv6 unicast-routing
+int vlan 25
+ ipv6 address baca:baca:1111:2222::/64 eui-64
+ ipv6 address autoconfig
+ ipv6 address face:cafe:fafa:caca::f/64
+end
+
+S1
+conf t
+ipv6 unicast-routing
+int e1/0
+ ipv6 address baca:baca:1111:2222::/64 eui-64
+ ipv6 address autoconfig
+ ipv6 address face:cafe:fafa:caca::f/64
+end
+

@@ -1,0 +1,368 @@
+Day 3 Design a sykes.com call center using 10.0.0.0/8 with 1700 host
+C 1700 host is 11bits
+S /32 - /11 = /21 -> 3rd,8i
+ipasok si 8i sa 3rd
+10.0.8.0
+1st 10.0.8.1
+last 10.0.15.254
+Broadacst 10.0.15.255
+notsykes.com 10.0.16.0
+
+ExamMarch: You found a missing laptop
+192.168.100.103/28. To which company it belongs
+a. Intel.com: 192.168.100.32
+b. coke.com 192.168.100.64
+c. nba.com 192.168.100.96
+d. cavs.com 192.168.100.98
+e. none of the above
+Ans
+192.168.100.103/28
+4th, 16i: 0,16,32,48,64,80,96,112
+nba.com
+192.168.100.73/28
+b
+
+
+You found a tablet with IP:
+192.168.10.150/27 -> 32i = .69 or .128
+192.168.10.111/28 -> 16i = .96 sya nakatira
+192.168.10.188/29, -> 8i = 184 is the network
+
+
+
+
+-------------------------------------------------------
+
+TASK 3: How to experience real world Network Engineer at BPO: More than 10 to 20 devices-
+
+step1: Give static IP to P1,P2
+p1:
+conf t
+int e0/0
+ip add 10.2.1.101 255.255.255.0
+
+p2:
+conf t
+int e1/0
+ip add 10.2.1.201 255.255.255.0
+
+step2: Configure static routing on
+p1: 
+conf t
+ip route 10.2.2.0 255.255.255.0 10.2.1.0
+do ping 10.2.2.1
+do ping 10.2.2.2
+ip route 192.168.1.128 255.255.255.224 10.2.1.1
+do ping 192.168.1.129
+do ping 192.168.1.130
+do sh ip route static
+
+step3: configure default routing on EDGE devices
+	EDGE = only one gateway/connection outside
+
+p2: default routing on p2
+config t
+ip route 0.0.0.0 0.0.0.0 10.2.1.2
+do sh ip route static
+do ping 10.2.2.2
+do ping 192.168.1.130
+
+step4: configire EIGRP on all Cisco Only sw/router
+EIGRP:
+write a cisco eigrp configuration with as 100
+and network 10.0.0.0 and 192.168.1.0
+
+d1:d2:
+config t
+router eigrp 100
+network 10.0.0.0
+network 192.168.1.0
+no auto-summary
+
+r4:
+config t
+router eigrp 100
+network 10.0.0.0
+no auto-summary
+
+How to check if EIGRP is working: 4 ways
+R4: best view
+show ip protocol
+show ip eigrp neighbor
+show ip eigrp topology "P 10.1.4.8/30, "
+show ip route eigrp
+
+ADMINISTRATIVE DISTANCES
+Static/default route = 1
+eBGP = 20
+iBGP = 200
+OSPF = 110
+EIGRP = 90, ExternalEigrp = 170
+RIP (obsolete) = 120
+IS-IS = 
+
+
+
+step5: OPEN SHORTEST PATH FIRST
+
+
+R4:
+config t
+int Lo 0
+ip add 4.4.4.4 255.255.255.255
+router ospf 1
+router-id 4.4.4.4
+network 10.1.1.8 0.0.0.3 area 34
+
+R3:
+config t
+int Lo 0
+ip add 3.3.3.3 255.255.255.255
+router ospf 1
+router-id 3.3.3.3
+network 10.1.1.8 0.0.0.3 area 34
+network 10.1.1.4 0.0.0.3 area 0
+
+R2:
+config t
+int Lo 0
+ip add 2.2.2.2 255.255.255.255
+router ospf 1
+router-id 2.2.2.2
+network 10.1.1.0 0.0.0.3 area 12
+network 10.1.1.4 0.0.0.3 area 0
+
+R1:
+config t
+int Lo 0
+ip add 1.1.1.1 255.255.255.255
+router ospf 1
+router-id 1.1.1.1
+network 10.1.1.0 0.0.0.3 area 12
+
+How to check
+show ip protocol
+show ip ospf neighbor
+show ip ospf database
+show ip route ospf
+
+Addingtional routes in OSPF:
+@R4:
+config t
+router ospf 1
+network 4.4.4.4 0.0.0.0 Area 34
+do sh ip route ospf
+
+@R3:
+config t
+router ospf 1
+network 3.3.3.3 0.0.0.0 Area 0
+do sh ip route ospf
+
+@R2:
+config t
+router ospf 1
+network 2.2.2.2 0.0.0.0 Area 0
+do sh ip route ospf
+
+@R1:
+config t
+router ospf 1
+network 1.1.1.1 0.0.0.0 Area 12
+do sh ip route ospf
+
+R4
+ping 1.1.1.1
+ping 2.2.2.2
+ping 3.3.3.3
+ping 4.4.4.4
+
+step6: Master OSPF packet types
+t1 = O
+t3 = O IA
+Hello:: R.A.S.A
+dbd: database description
+LSU = Link state Update
+if OSPF is link state, what are the states?
+"DITE ELF"
+Down
+Init
+TwoWay
+Estart
+Exchange
+Loading
+Full = andar lahat, pingLahat
+
+step7: Route redistribution:
+CCNA = pag hindi nagkikita, iiyak na alng
+CCNP = gagwan ng paraaan. Route redistribution
+ipasok OSPF sa loob ng EIGRP
+@R4
+conf t
+router eigrp 100
+redistribute ospf 1 metric 10000 100 255 1 1500
+exit
+@R4
+!ipasok EIGRP sa OSPF, no requirement ($ to peso)
+router ospf 1
+redistribute eigrp 100 subnets
+end
+
+
+step8: Compute and collect
+3 x 
+
+
+step9: BGP fundamentals
+What is Autonomous system Numbers or AS number: group of internet routers under the same administration. Group of routers running BGP
+Private AS: 64512 -> 65534
+Public AS: 1 to 64511
+https://bgp.potaroo.net/cidr/autnums.html
+
+
+
+RealworldBGP:
+@R1
+R1 BGP:
+config t
+router bgp 1
+ bgp log-neighbor-changes
+ neighbor 208.8.8.4 remote-as 45
+ neighbor 207.7.7.2 remote-as 2
+ neighbor 209.9.9.3 remote-as 3
+ network 10.0.0.0 Mask 255.255.255.252
+ network 207.7.7.0
+ network 208.8.8.0
+ network 209.9.9.0
+end
+@@@ISP1:
+CONFIG T
+router bgp 45
+bgp log-neighbor-changes
+neighbor 24.2.4.2 remote-as 2
+neighbor 45.4.5.5 remote-as 45
+neighbor 208.8.8.1 remote-as 1
+network 208.8.8.0
+network 24.2.4.0 mask 255.255.255.0
+network 44.44.44.44 mask 255.255.255.255
+network 45.4.5.0 mask 255.255.255.0
+!PretentInternet
+network 0.0.0.0
+ip route 0.0.0.0 0.0.0.0 null 0
+ip route 10.0.0.0 255.0.0.0 208.8.8.1
+end
+
+@@@ISP2:
+config t
+router bgp 2
+bgp log-neighbor-changes
+neighbor 24.2.4.4 remote-as 45
+neighbor 25.2.5.5 remote-as 45
+neighbor 32.3.2.3 remote-as 3
+neighbor 207.7.7.1 remote-as 1
+network 207.0.0.0
+network 22.22.22.22 mask 255.255.255.255
+network 24.2.4.0 mask 255.255.255.0
+network 25.2.5.0 mask 255.255.255.0
+network 32.3.2.0 mask 255.255.255.0
+!fakeInternet
+network 0.0.0.0
+ip route 0.0.0.0 0.0.0.0 null 0
+ip route 10.0.0.0 255.0.0.0 207.7.7.1
+end
+@@ISP3:
+CONFIG T
+router bgp 3
+bgp log-neighbor-changes
+neighbor 32.3.2.2 remote-as 2
+neighbor 35.3.5.5 remote-as 45
+neighbor 209.9.9.1 remote-as 1
+network 209.9.9.0
+network 32.3.2.0 mask 255.255.255.0
+network 33.33.33.33 mask 255.255.255.255
+network 35.3.5.0 mask 255.255.255.0
+network 0.0.0.0
+ip route 0.0.0.0 0.0.0.0 null 0
+ip route 10.0.0.0 255.0.0.0 209.9.9.1
+end
+
+Isp4:
+config t
+int lo 8
+ ip add 8.8.8.8 255.255.255.255
+router bgp 45
+ bgp log-neighbor-changes
+ neighbor 25.2.5.2 remote-as 2
+ neighbor 35.3.5.3 remote-as 3
+ neighbor 45.4.5.4 remote-as 45
+ network 8.8.8.8 mask 255.255.255.255
+ network 55.55.55.55 mask 255.255.255.255
+ network 25.2.5.0 mask 255.255.255.0
+ network 35.3.5.0 mask 255.255.255.0
+ network 45.4.5.0 mask 255.255.255.0
+end
+
+
+step10: OSPF DEFAULT INFORMATION ORIGINATE
+@R1:
+config t
+router ospf 1
+default-information originate
+end
+
+
+sh ip bgp summary
+
+
+TASK 4: VIRTUAL PRIVATE NETWORKING. VPN for Network Engineer
+
+2 TYPES OF VPN
+1. Remote access VPN: Home to office
+Fortinet client, Anyconnect,Sophos(Pro-virus),OpenVPN
+
+2. site to site VPN
+
+
+
+HOMEWORK
+SUNDAY/MONDAY: static,eigrp,ospf,bgp,redistribution
+
+tue/wed: site to site vpn
+
+
+
+TASK5: WIRELESS INFRASTRUCTURE; WIRELESS LAN CONTROLLER
+2 types of AP Access Points
+1. Autonomous AP - stand alone AP. Not dependent to WLC
+
+2. LWAP (Lightweight Access Point) - dependent on WLC Wireless LAN Controller
+Protocol: LWAP
+
+Wifi router vs Access Point
+Wifi Router acts as an accesspoint and a switch AT THE SAME TIME!
+
+Access point acts as an access point ONLY!
+
+Wireless LAN Controller (WLC) - a centralized device that manages all connected access points
+
+Advantages: Easy to ACCESS, MANAGE, and SIMPLIFY the work
+
+Single Band vs. Dual Band
+2.4GHz           2.4GHz and 5GHz
+
+2.4GHz - slow speed BUT wider range.
+	- 11 channels
+	- Ch 1,16,11 not overlapping
+5GHz - faster speed BUT narrow range
+	- 24 non-overlapping channels  
+
+1 AP: 3 SSIDs
+
+WIFI SECURITY PROTOCOLS:
+1. WEP (Wired Equivelant Privacy) - obsolete. Vulnerable
+2. WPA (Wifi Protected Access) - TKIP encryption (Temporal-Key Integrity Protocol)
+				- key matching
+3. WPA2 (Wifi Protected Access 2) - AES Encryption (Advanced Encryption Standard)
+4. WPA3 (Wifi Protected Access 3) - 
+5. WPA2 Personal
+6. WPA2 Enterprise

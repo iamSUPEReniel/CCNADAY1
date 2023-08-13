@@ -1,0 +1,17 @@
+{
+    "aironet": 
+        [{
+        "host_ip":"10.31.10.3",
+        "hostname": "31AironetAP",
+        "username": "admin",
+        "password": "pass",
+        "ssid": "31-OKADAWIFI",
+        "authentication": "open",
+        "key-man": "wpa",
+        "wifi-pass": "Cisc0123",
+        "channel": "5",
+        "enc-mod": "tkip"
+    
+    
+        }]
+    }

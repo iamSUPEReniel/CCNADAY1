@@ -1,0 +1,607 @@
+NETWORK ENGR DAY5:
+TASK 1: How to know if you have real world experience?
+1. password jailbreak:
+Apple, android, PC
+Cisco Switch vs Router:
+Risk: Ground, call a friend
+step1: unplug
+step2: wait 16sec
+step3: flash_init
+step4:
+Bura lahat: delete flash:config.text
+or keep old config: rename flash:config.text flash:config.bak
+
+step5: boot
+
+
+TASK2: Jailbreak all Cisco router
+step1: OT on a Sunday!
+
+rommon>
+step1:
+confreg 0x2142
+i
+^c --- wag yes or no
+enable
+copy start run - pag error, wala talagang password!
+config t
+enable secret pass
+config-register 0x2102
+do wr
+
+
+TASK2: Preparing for Devops
+git clone https://github.com/rivancorp/highpay
+
+TASK3: Firewall/Router vs Switch
+OSI:   layer3/layer4      Layer2
+PDU:   packets/segment    Frames, ethernet
+S/D    sPort/sIP/dIP      sMAC, dMAC
+
+
+TASK4: COre switch configs
+ping 10.31.1.10
+ping 10.31.1.4
+
+
+TASK5: How to master Switching like an Expert
+Know the 5 superheroes of switching
+Qpid: 802.1Q  = Trunking protocol
+"Make Switches Love each Other"
+Darna: 802.1d: Spanning Tree Protocol STP
+Wonderwoman: 802.1w = rapidSTP
+Superman: 802.1s = MultipleInstanceSTP
+Xmen: 802.1x = Port Based Authentication
+
+taas and baba:
+config t
+default int range fa0/10-12
+pc:
+ping 10.31.1.10
+ping 10.31.1.4
+ping 10.31.1.2
+
+Green = good
+amber/orange = NotYetConfigured
+
+
+
+TASK6: SWITCHING FUNDAMENTALS
+coretaas
+sh spanning-tree vlan 1
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     f025.726e.1800
+
+corebaba
+sh spanning-tree vlan 1
+  VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     0817.350e.0e80
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     0817.350e.0e80
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Fa0/1               Desg FWD 19        128.1    P2p 
+Fa0/8               Desg FWD 19        128.8    P2p 
+Fa0/10              Desg FWD 19        128.10   P2p 
+Fa0/11              Desg FWD 19        128.11   P2p 
+Fa0/12              Desg FWD 19        128.12   P2p 
+
+
+TASK7: Access and Trunk Ports
+Switch na 5M: Coreswitch (Lahat trunk ports)
+Trunks are Switch to Switch: uses 802.1q
+ to make switches love each other
+
+TAAS/BABA:
+config t
+int range fa0/10-12
+switchport trunk encap Dot1Q
+switchport mode trunk
+end
+show int trunk
+
+TASK8: UNICAST vs BROADCAST vs MULTICAST:
+tOP5 BRANDS
+CISCO 70%: Cisco invented the switch!
+HP/Dell 10%
+Huawei
+
+c>ping 10.31.1.2 -t
+
+Unicast: normal MAC
+Broadcast: FFFF.FFFF.FFFF
+Multicast: 01-00-5e.xx.xx.xx
+
+
+TASK9: THE LOOK OF EXPERIENCE
+Ang tunay na magaling, tingin lang, alam na!
+
+HOW TO BE TERMINATED ASAP: 
+BABA: Kill darna/802.1d
+config t
+no spanning-tree vlan 1
+end
+
+TAAS:
+config t
+no spanning-tree vlan 1
+end
+
+hOW TO FIX
+IBalik si darna
+BABA: Ibalik si darna/802.1d
+config t
+spanning-tree vlan 1
+end
+
+taas: Ibalik si darna/802.1d
+config t
+spanning-tree vlan 1
+end
+
+TASK10: MASTERING DARNA
+STP timers: STP port states
+blocking-listening-learning-forwarding
+	   15s
+
+blocking 
+listening
+learning
+forwarding
+
+corebaba
+sh spanning-tree vlan 100
+
+TASK11: STP ROOT BRIDGE AND SECONDARY ROOT
+Most expensive switch = Root bridge
+
+2nd most expensive switch = secondary root
+
+config t
+spanning-tree vlan 1-100 priority 32768
+@TAAS:
+CCNA:
+config t
+spanning-tree vlan 1-100 priority 24576
+
+CCNP:
+config t
+spanning-tree vlan 1-100 root Primary
+
+@BABA
+CCNA:
+config t
+spanning-tree vlan 1-100  priority 28672
+CCNP:
+config t
+spanning-tree vlan 1-100 root secondary
+
+TASK12: NETWORK ENGINEER LANGUAGE
+Rule1 in office politics: Be dual boot
+1. Language of NEtwork Engineers
+	Designated Port: all ports of rootbridge
+	RootPort: forwardingPort of a Non-rootbridge: 1pnly
+	AlternatePort: BlockingPorts used as spare
+	BackUpPort: Due to kabobohan
+
+!Bounce
+int fa0/3
+shut
+no shut
+
+Interview question
+How do u determine the root port?
+Cost>Priority>Number
+
+
+TASK13: 802.1w or Rapid Spanning-Tree Protocol:
+Wonderwoman: quickly/brutally protect switch!
+		No Mercy!
+
+@TAAS:
+config t
+spanning-tree mode rapid-pvst
+spanning-tree Backbonefast
+spanning-tree portfast bpduguard default
+int range fa0/1-8
+spanning-tree portfast
+end
+
+@BABA:
+config t
+spanning-tree mode rapid-pvst
+spanning-tree Uplinkfast
+spanning-tree portfast bpduguard default
+int range fa0/1-8
+spanning-tree portfast
+end
+
+Anti-Sabotage:
+sh int status err-disable
+
+TASK14: TOP4 JOBS OF LAYER 3 EXPENSIVE SWITCH
+1. POE: Power Over Ethernet
+sh power inline
+
+2. VLANs: Centralized Enterprise VLANs
+Traffic:		SViTaas		SViBaba
+Data 		vlan1	10.31.1.2	10.31.1.4
+Voice 		vlan100	10.31.100.2	10.31.100.4
+wifi 		vlan10	10.31.10.2	10.31.10.4
+ipvideo (ipcam) vlan50	10.31.50.2	10.31.50.4
+
+@BABA
+config t
+   hostname COREbaba31
+   enable secret pass
+   service password-encryption
+   no logging console
+   no ip domain-lookup
+   line console 0
+     password pass
+     login
+     exec-timeout 0 0
+    line vty 0 14
+      password pass
+      login
+      exec-timeout 0 0
+   Int Gi 0/1
+     no shutdown
+	  no switchport
+	  ip add 10.31.31.4 255.255.255.0
+   Int Vlan 1
+     no shutdown
+	 ip add 10.31.1.4 255.255.255.0
+	 description MGMTDATA
+   Int Vlan 10
+     no shutdown
+	 ip add 10.31.10.4 255.255.255.0
+	 description WIRELESS
+Int Vlan 50
+     no shutdown
+	 ip add 10.31.50.4 255.255.255.0
+	 description IPVIDEO
+   Int Vlan 100
+     no shutdown
+	 ip add 10.31.100.4 255.255.255.0
+	 description VOICEVLAN
+
+@TAAS
+config t
+   hostname COREtaas31
+   enable secret pass
+   service password-encryption
+   no logging console
+   no ip domain-lookup
+   line console 0
+     password pass
+     login
+     exec-timeout 0 0
+    line vty 0 14
+      password pass
+      login
+      exec-timeout 0 0
+   Int Gi 0/1
+     no shutdown
+	  no switchport
+	  ip add 10.31.31.2 255.255.255.0
+   Int Vlan 1
+     no shutdown
+	 ip add 10.31.1.2 255.255.255.0
+	 description MGMTDATA
+   Int Vlan 10
+     no shutdown
+	 ip add 10.31.10.2 255.255.255.0
+	 description WIRELESS
+Int Vlan 50
+     no shutdown
+	 ip add 10.31.50.2 255.255.255.0
+	 description IPVIDEO
+   Int Vlan 100
+     no shutdown
+	 ip add 10.31.100.2 255.255.255.0
+	 description VOICEVLAN
+
+
+VTP(VLAN Trunking Protocol): VLAN sync
+@taas/baba
+config t
+vtp mode transparent
+vtp mode server
+vtp domain ccna
+vtp password pass
+vtp version 1
+exit
+
+TAAS:
+config t
+vlan 8
+name HAHAHAHA
+exit
+
+BABA
+sh vlan br
+
+TAAS: cleanup
+config t
+no vlan 2-100
+exit
+
+BABA
+sh vlan br
+
+GAWAVLAN andLIPATPorts
+@Baba
+config t
+vlan 10
+name WIRELESS
+vlan 50
+name IPCAMERA
+vlan 100
+name VOIP
+exit
+int fa0/2
+switchport access vlan 10
+int fa0/4
+switchport access vlan 10
+int fa0/3
+switchport access vlan 100
+int f0/5
+switchport access vlan 100
+int fa0/7
+switchport access vlan 100
+int fa0/6
+switchport access vlan 50
+int fa0/8
+switchport access vlan 50
+do sh vlan br
+end
+
+DHCPServer: for data, wireless, video, camera
+config t
+ip routing
+ip dhcp Excluded-add 10.31.1.1 10.31.1.100
+ip dhcp Excluded-add 10.31.10.1 10.31.10.100
+ip dhcp Excluded-add 10.31.100.1 10.31.100.100
+ip dhcp Excluded-add 10.31.50.1 10.31.100.100
+ip dhcp pool MGMTDATA
+   network 10.31.1.0 255.255.255.0
+   default-router 10.31.1.4
+   domain-name MGMTDATA.COM
+   dns-server 10.31.1.10
+ip dhcp pool WIFIDATA
+   network 10.31.10.0 255.255.255.0
+   default-router 10.31.10.4
+   domain-name WIFIDATA.COM
+   dns-server 10.31.1.10
+ip dhcp pool VOICEVLAN
+   network 10.31.100.0 255.255.255.0
+   default-router 10.31.100.4
+   domain-name VOICEVLAN.COM
+   dns-server 10.31.1.10
+   option 150 ip 10.31.100.8   
+ip dhcp pool IPCAMERA
+   network 10.31.50.0 255.255.255.0
+   default-router 10.31.50.4
+   domain-name IPCAMERA.COM
+   dns-server 10.31.1.10
+   option 150 ip 10.31.100.8   
+   END
+
+PING
+1. ping 10.31.1.10
+2. ping 10.31.1.4
+Phones/CUCM
+3. ping 10.31.100.103
+4. ping 10.31.100.104
+WIRELESS
+5. ping 10.31.10.3
+IPCAMERA
+6. ping 10.31.50.6
+7. ping 10.31.50.8
+
+cisco1.json
+{
+ "router": [
+  {
+     "host_ip": "10.31.1.2",
+     "hostname": "COREtaasniJSON1",
+	 "username": "admin",
+	 "password": "pass",
+     "lo_interfaces": ["11.1.1.1","22.2.2.2","33.3.3.3"]
+  },
+   {
+     "host_ip": "10.31.1.4",
+     "hostname": "COREbabaniJSON2",
+	 "username": "admin",
+	 "password": "pass",
+     "lo_interfaces": ["44.4.4.4","55.5.5.5","66.6.6.6"]
+  }
+ ]
+}
+
+
+ciscojs1.py
+import telnetlib
+import json
+
+with open('cisco1.json') as f:
+    data = json.load(f)
+
+for entry in data['router']:
+    host_ip = entry['host_ip']
+    username = entry['username']
+    password = entry['password']
+    hostname = entry['hostname']
+
+    tn = telnetlib.Telnet(host_ip)
+
+    tn.read_until(b"Username: ")
+    tn.write(username.encode('ascii') + b"\n")
+    if password:
+        tn.read_until(b"Password: ")
+        tn.write(password.encode('ascii') + b"\n")
+
+    tn.write(b"enable\n")
+    tn.write(b"pass\n")
+    tn.write(b"conf t\n")
+    tn.write(b"hostname " + hostname.encode('ascii') + b"\n")
+
+    lo_number = 1
+    for interface in entry['lo_interfaces']:
+        tn.write(b"no int lo " + str(lo_number).encode('ascii') + b"\n")
+        tn.write(b"int lo" + str(lo_number).encode('ascii') + b"\n")
+        tn.write(b"ip add " + interface.encode('ascii') + b" 255.255.255.0\n")
+        tn.write(b"no shut\n")
+        lo_number = lo_number + 1
+
+    tn.write(b"end\n")
+    tn.write(b"exit\n")
+    print(tn.read_all().decode('ascii'))
+    tn.close()
+
+f.close()
+
+
+TASK 15: NETWORK ENGINEER
+DATA, VOICE, WIRELESS, IPCAMERA
+
+
+TASK16: Cisco Port Security: How to prevent theft using SWAP method
+@BABA: Protect IP phones and IP camera
+config t
+int range fa 0/5-8
+switchport mode access
+switchport port-security
+switchport port-security mac-address sticky
+switchport port-security maximum 1
+switchport port-security violation shutdown
+do sh port-security address
+do sh int status err-disabled
+
+COREbabaniJSON2(config-if-range)#do sh int status err-disabled
+
+Port      Name               Status       Reason               Err-disabled Vlans
+Fa0/5                        err-disabled psecure-violation
+Fa0/6                        err-disabled psecure-violation
+Fa0/7                        err-disabled psecure-violation
+Fa0/8                        err-disabled psecure-violation
+
+
+BRING IT BACK ALIVE
+config t
+int range fa 0/5-8
+no switchport port-security
+shut
+no shut
+end
+
+TASK17: THE IMPORTANCE OF ETHERCHANNEL IN SWITCHING
+Port Aggregation: combining the physical ports into a virtual/logical port with combined speed
+Cisco invention: Port Aggregation Protocol (PagP)
+IEEE standard: LACP (Link Aggregation Control Protocol)
+
+@BABA/TAAS
+config t
+int range fa0/10-12
+shutdown
+channel-group 1 mode active
+channel-protocol lacp
+no shut
+int Port-channel 1
+switchport trunk encap dot1Q
+switchport mode trunk
+do sh etherchannel summary
+do sh int po 1 | inc BW
+
+
+TASK18: Multiple Instance Spanning-tree MST:
+802.1s, Superman: "Protect many switches at the same time!"
+
+Configuring all instance/cpu to work!
+!@TAAS:
+config t
+vlan 11-39
+exit
+!TAAS/BABA
+!superman
+config t
+spanning-tree mode mst
+spanning-tree mst configuration
+name SUPERMAN
+revision 1
+instance 1 vlan 11-19
+instance 2 vlan 21-29
+instance 3 vlan 31-39
+exit
+do sh spanning-tree mst configuration
+
+MAKE NEW ROOTBRIDGE for Superman/802.1s
+!@taas
+config t
+spanning-tree mst 0 root primary
+spanning-tree mst 1 root secondary
+spanning-tree mst 2 root primary
+spanning-tree mst 3 root secondary
+end
+
+!@baba
+config t
+spanning-tree mst 0 root secondary
+spanning-tree mst 1 root primary
+spanning-tree mst 2 root secondary
+spanning-tree mst 3 root primary
+end
+
+
+TASK19: HOT STANDBY ROUTING PROTOCOL: HSRP is a part of FHRP (First Hop Redundancy Protocol)
+Combines IPaddress as the single gateway of all devices
+gi 0/1:PLDT Fiber		gi 0/1:GLobebizfiber
+coretaas: 10.31.1.2		corebaba: 10.31.1.4
+HSRPstandbyIP: 10.31.1.6
+
+!@TAAS: Primary Internet
+config t
+track 1 int gi 0/1 line-protocol
+int vlan 1
+standby 1 ip 10.31.1.6
+standby 1 preempt
+standby 1 priority 150
+standby 1 track 1 decrement 60
+
+!@baba:
+config t
+track 1 int gi 0/1 line-protocol
+int vlan 1
+standby 1 ip 10.31.1.6
+standby 1 preempt
+standby 1 priority 100
+
+
+HOW TO MASTER SWITCHING AT HOME:
+Packet Tracer vs RSTHayup
+1. Watch the soon to be released HAYUP at HOME at youtube.com
+
+2. Careershift to Network Engineering: step by step
+SuperResume + RST + Linux: Web/zoom
+	1. Upgrade your TropaUpgrade: Groupchat
+	2. Compare: 
+		4/5/6yrs + Tuition + Baon + effort = sweldo/Now
+		vs
+		5 sundays + m-f assignment + Linux inuman session = Sweldo?
+		CCNA + Linux + Pythin + Json = 50k above
+		1month of
+
+
+3. How to be a network engineer
+Method1: Burn the bridge method. Resign + Ipon + Exam
+
+Testing center
